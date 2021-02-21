@@ -29,7 +29,14 @@ const Card = ({
   const x = useSharedValue(0);
   const y = useSharedValue(0);
 
+  const textOpacityMultiplier = useSharedValue(1);
   const openAnimation = useSharedValue(1);
+
+  const cardSpringConfig = {
+    damping: 100,
+    stiffness: 90,
+    mass: 0.5,
+  };
 
   const gestureHandler = useAnimatedGestureHandler({
     onStart: (_, ctx) => {
@@ -45,16 +52,18 @@ const Card = ({
         x.value = withSpring(400, {
           velocity: event.velocityX,
         });
+        textOpacityMultiplier.value = withTiming(0, {duration: 100});
         runOnJS(onChooseRightAnswer)();
       } else if (event.velocityX < -500 || event.translationX < -150) {
         x.value = withSpring(-400, {
           velocity: event.velocityX,
         });
+        textOpacityMultiplier.value = withTiming(0, {duration: 100});
         runOnJS(onChooseLeftAnswer)();
       } else {
-        x.value = withSpring(0);
+        x.value = withSpring(0, cardSpringConfig);
       }
-      y.value = withSpring(0);
+      y.value = withSpring(0, cardSpringConfig);
     },
   });
 
@@ -80,7 +89,7 @@ const Card = ({
           rotateZ: interpolate(
             x.value,
             [-50, 50],
-            [-0.2, 0.2],
+            [-0.05, 0.05],
             Extrapolate.EXTEND,
           ),
         },
@@ -138,13 +147,37 @@ const Card = ({
 
   const animatedRightTextWrapper = useAnimatedStyle(() => {
     return {
-      opacity: interpolate(x.value, [15, 40], [0, 1], Extrapolate.CLAMP),
+      opacity:
+        textOpacityMultiplier.value *
+        interpolate(x.value, [15, 70], [0, 1], Extrapolate.CLAMP),
+      transform: [
+        {
+          rotateZ: interpolate(
+            x.value,
+            [0, 50],
+            [0, -0.03],
+            Extrapolate.EXTEND,
+          ),
+        },
+      ],
     };
   });
 
   const animatedLeftTextWrapper = useAnimatedStyle(() => {
     return {
-      opacity: interpolate(x.value, [-15, -40], [0, 1], Extrapolate.CLAMP),
+      opacity:
+        textOpacityMultiplier.value *
+        interpolate(x.value, [-15, -70], [0, 1], Extrapolate.CLAMP),
+      transform: [
+        {
+          rotateZ: interpolate(
+            x.value,
+            [-50, 0],
+            [0.03, 0],
+            Extrapolate.EXTEND,
+          ),
+        },
+      ],
     };
   });
 
@@ -166,7 +199,9 @@ const Card = ({
               </Animated.View>
               <Animated.View
                 style={[animatedLeftTextWrapper, styles.topTextWrapper]}>
-                <Animated.Text style={styles.topText}>{leftText}</Animated.Text>
+                <Animated.Text style={[styles.topText, styles.textLeft]}>
+                  {leftText}
+                </Animated.Text>
               </Animated.View>
               <CardPerson image={image} />
               <Animated.View style={[animatedFrontShadow, styles.shadow]} />
@@ -199,13 +234,20 @@ const styles = StyleSheet.create({
   },
   topTextWrapper: {
     position: 'absolute',
-    width: '100%', // because absolute
+    width: '120%', // because absolute
+    left: '-10%',
+    top: '-10%',
+    paddingTop: '15%',
+    paddingHorizontal: '15%',
     backgroundColor: 'rgba(0,0,0,0.4)',
     padding: 15,
     zIndex: 10,
   },
   topText: {
     color: '#fff',
+  },
+  textLeft: {
+    textAlign: 'right',
   },
   shadow: {
     position: 'absolute',
