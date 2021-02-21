@@ -23,6 +23,7 @@ const Card = ({
   leftText,
   rightText,
   image,
+  backgroundColor,
 }) => {
   const [isActive, setIsActive] = useState(false);
   const [showCard, setShowCard] = useState(false);
@@ -190,7 +191,8 @@ const Card = ({
         </Animated.View>
         <PanGestureHandler onGestureEvent={gestureHandler} enabled={isActive}>
           <Animated.View style={animatedFront}>
-            <Animated.View style={[animatedMovableCard, styles.wrapper]}>
+            <Animated.View
+              style={[animatedMovableCard, styles.wrapper, {backgroundColor}]}>
               <Animated.View
                 style={[animatedRightTextWrapper, styles.topTextWrapper]}>
                 <Animated.Text style={styles.topText}>
@@ -217,14 +219,12 @@ const styles = StyleSheet.create({
   wrapper: {
     height: 240,
     width: 240,
-    backgroundColor: '#ccc',
     borderRadius: 35,
     overflow: 'hidden',
   },
   wrapperBack: {
     height: 240,
     width: 240,
-    backgroundColor: '#aaa',
     borderRadius: 35,
     overflow: 'hidden',
     position: 'absolute',
@@ -254,6 +254,7 @@ const styles = StyleSheet.create({
     height: '100%',
     width: '100%',
     backgroundColor: '#000',
+    zIndex: 10,
   },
 });
 

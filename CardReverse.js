@@ -21,6 +21,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: '#FFCCD3',
   },
   reverseIcon: {
     height: 140,

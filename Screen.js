@@ -26,6 +26,7 @@ export default function AnimatedStyleUpdateExample(props) {
             leftText={'Left Option'}
             rightText={'Right Option'}
             image={'https://image.flaticon.com/icons/png/512/3479/3479910.png'}
+            backgroundColor={'#ccc'}
           />
         )}
       </View>

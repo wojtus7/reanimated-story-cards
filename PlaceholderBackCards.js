@@ -40,6 +40,7 @@ const styles = StyleSheet.create({
     width: 240,
     backgroundColor: '#aaa',
     borderRadius: 35,
+    overflow: 'hidden',
   },
   cardWrapper: {
     height: 240,
