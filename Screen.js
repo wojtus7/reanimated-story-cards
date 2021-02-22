@@ -1,24 +1,53 @@
 import {View, StyleSheet} from 'react-native';
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import Card from './Card';
 import PlaceholderBackCards from './PlaceholderBackCards';
+import Question from './Question';
+import PowerIndicators from './PowerIndicators';
 
 export default function AnimatedStyleUpdateExample(props) {
-  const [showCard, setShowCard] = useState(true);
+  const [showReverseCard, setShowReverseCard] = useState(false);
+  const [showCard, setShowCard] = useState(false);
+  const [showQuestion, setShowQuestion] = useState(false);
 
-  const onChooseAnswer = () => {
-    setTimeout(() => {
-      setShowCard(false);
-    }, 300);
+  const showNextCard = (timeout) => {
     setTimeout(() => {
       setShowCard(true);
-    }, 700);
+      setTimeout(() => {
+        setShowQuestion(true);
+      }, 100);
+    }, timeout);
+  };
+
+  useEffect(() => {
+    setTimeout(() => {
+      setShowReverseCard(true);
+    }, 500);
+    showNextCard(2000);
+  }, []);
+
+  const onChooseAnswer = () => {
+    setShowQuestion(false);
+    setTimeout(() => {
+      // let it fly away in peace for 300 ms
+      setShowCard(false);
+    }, 300);
+    showNextCard(700);
   };
 
   return (
     <View style={styles.wrapper}>
+      <View style={styles.topWrapper}>
+        <PowerIndicators />
+      </View>
+      <View style={styles.questionWrapper}>
+        <Question
+          question="Something something super something"
+          showQuestion={showQuestion}
+        />
+      </View>
       <View style={styles.cardWrapper}>
-        <PlaceholderBackCards />
+        {showReverseCard && <PlaceholderBackCards />}
         {showCard && (
           <Card
             onChooseLeftAnswer={onChooseAnswer}
@@ -30,6 +59,7 @@ export default function AnimatedStyleUpdateExample(props) {
           />
         )}
       </View>
+      <View style={styles.nameWrapper} />
     </View>
   );
 }
@@ -39,12 +69,25 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'column',
     alignItems: 'center',
-    justifyContent: 'center',
   },
   cardWrapper: {
-    width: '100%',
-    height: 300,
+    height: 240,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  questionWrapper: {
+    height: 100,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  nameWrapper: {
+    height: 100,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  topWrapper: {
+    width: '100%',
+    height: 200,
+    backgroundColor: '#ccc',
   },
 });
