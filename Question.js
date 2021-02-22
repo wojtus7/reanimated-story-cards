@@ -6,7 +6,7 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 
-const Question = ({question, showQuestion}) => {
+const Question = ({question = '', showQuestion}) => {
   const openAnimation = useSharedValue(0);
 
   useEffect(() => {
