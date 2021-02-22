@@ -14,7 +14,7 @@ const PlaceholderBackCards = () => {
 
   useEffect(() => {
     openAnimation.value = 0;
-  }, []);
+  }, [openAnimation]);
 
   function cardTransform(index) {
     return () => {
@@ -33,6 +33,7 @@ const PlaceholderBackCards = () => {
         transform: [
           {translateX: localTranslateX},
           {translateY: localTranslateY},
+          {rotateY: '180deg'},
         ],
         zIndex: index,
       };
@@ -49,13 +50,11 @@ const PlaceholderBackCards = () => {
   };
 
   return (
-    <>
-      <View style={styles.cardWrapper}>
-        {times(5, (index) => (
-          <Card index={index} />
-        ))}
-      </View>
-    </>
+    <View style={styles.cardWrapper}>
+      {times(5, (index) => {
+        return <Card key={`card_${index}`} index={index} />;
+      })}
+    </View>
   );
 };
 

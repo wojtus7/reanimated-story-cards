@@ -1,12 +1,13 @@
 import React from 'react';
-import {Image, View, StyleSheet} from 'react-native';
+import {View, StyleSheet} from 'react-native';
+import FastImage from 'react-native-fast-image';
 
 const CardReverse = ({isMirrored, shadowOpacity = 0}) => {
   return (
     <>
       <View style={styles.wrapper}>
         <View style={[styles.shadow, {opacity: shadowOpacity}]} />
-        <Image
+        <FastImage
           source={{
             uri: 'https://image.flaticon.com/icons/png/512/3483/3483048.png',
           }}

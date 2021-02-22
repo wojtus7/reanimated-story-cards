@@ -1,15 +1,20 @@
 import {View, StyleSheet} from 'react-native';
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import Card from './Card';
 import PlaceholderBackCards from './PlaceholderBackCards';
 import Question from './Question';
 import PowerIndicators from './PowerIndicators';
+import PlaceholderBackStaticCard from './PlaceholderBackStaticCard';
+import StartButton from './StartButton';
 
 export default function AnimatedStyleUpdateExample(props) {
+  const [showStartButton, setShowStartButton] = useState(true);
+  const [showAnimatedReverseCard, setShowAnimatedReverseCard] = useState(false);
   const [showReverseCard, setShowReverseCard] = useState(false);
   const [showCard, setShowCard] = useState(false);
   const [showQuestion, setShowQuestion] = useState(false);
 
+  // TODO refactor those settimeouts
   const showNextCard = (timeout) => {
     setTimeout(() => {
       setShowCard(true);
@@ -19,12 +24,19 @@ export default function AnimatedStyleUpdateExample(props) {
     }, timeout);
   };
 
-  useEffect(() => {
+  const onStartGame = () => {
+    setTimeout(() => {
+      setShowStartButton(false);
+      setShowAnimatedReverseCard(true);
+    }, 500);
     setTimeout(() => {
       setShowReverseCard(true);
-    }, 500);
-    showNextCard(2000);
-  }, []);
+      setTimeout(() => {
+        setShowAnimatedReverseCard(false);
+      }, 100);
+    }, 2000);
+    showNextCard(2500);
+  };
 
   const onChooseAnswer = () => {
     setShowQuestion(false);
@@ -47,7 +59,9 @@ export default function AnimatedStyleUpdateExample(props) {
         />
       </View>
       <View style={styles.cardWrapper}>
-        {showReverseCard && <PlaceholderBackCards />}
+        {showStartButton && <StartButton onPress={onStartGame} />}
+        {showAnimatedReverseCard && <PlaceholderBackCards />}
+        {showReverseCard && <PlaceholderBackStaticCard />}
         {showCard && (
           <Card
             onChooseLeftAnswer={onChooseAnswer}
