@@ -234,7 +234,7 @@ const styles = StyleSheet.create({
   },
   topTextWrapper: {
     position: 'absolute',
-    width: '120%', // because absolute
+    width: '120%',
     left: '-10%',
     top: '-10%',
     paddingTop: '15%',

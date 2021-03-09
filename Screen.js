@@ -12,6 +12,7 @@ export default function AnimatedStyleUpdateExample() {
   const {getCardByIndex} = useGeneratedCards();
   const [currentCard, setCurrentCard] = useState({});
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
+  const [currentMood, setCurrentMood] = useState({happy: [], sad: []});
 
   const [showStartButton, setShowStartButton] = useState(true);
   const [showAnimatedReverseCard, setShowAnimatedReverseCard] = useState(false);
@@ -31,6 +32,8 @@ export default function AnimatedStyleUpdateExample() {
 
   const onStartGame = () => {
     setCurrentCard(getCardByIndex(currentCardIndex));
+    setCurrentCardIndex(currentCardIndex + 1);
+
     setTimeout(() => {
       setShowStartButton(false);
       setShowAnimatedReverseCard(true);
@@ -44,12 +47,28 @@ export default function AnimatedStyleUpdateExample() {
     showNextCard(2500);
   };
 
-  const onChooseAnswer = () => {
-    setCurrentCardIndex((lastIndex) => lastIndex + 1);
+  const onChooseLeftAnswer = () => {
+    setCurrentMood(currentCard.onLeft);
+    createNewCard();
+    setTimeout(() => {
+      setCurrentMood({happy: [], sad: []});
+    }, 200);
+  };
+
+  const onChooseRightAnswer = () => {
+    setCurrentMood(currentCard.onRight);
+    createNewCard();
+    setTimeout(() => {
+      setCurrentMood({happy: [], sad: []});
+    }, 200);
+  };
+
+  const createNewCard = () => {
     setShowQuestion(false);
     setTimeout(() => {
       // let it fly away in peace for 300 ms
       setCurrentCard(getCardByIndex(currentCardIndex));
+      setCurrentCardIndex(currentCardIndex + 1);
       setShowCard(false);
     }, 300);
     showNextCard(700);
@@ -58,7 +77,7 @@ export default function AnimatedStyleUpdateExample() {
   return (
     <View style={styles.wrapper}>
       <View style={styles.topWrapper}>
-        <PowerIndicators />
+        <PowerIndicators currentMood={currentMood} />
       </View>
       <View style={styles.questionWrapper}>
         <Question question={currentCard.question} showQuestion={showQuestion} />
@@ -69,8 +88,8 @@ export default function AnimatedStyleUpdateExample() {
         {showReverseCard && <PlaceholderBackStaticCard />}
         {showCard && (
           <Card
-            onChooseLeftAnswer={onChooseAnswer}
-            onChooseRightAnswer={onChooseAnswer}
+            onChooseLeftAnswer={onChooseLeftAnswer}
+            onChooseRightAnswer={onChooseRightAnswer}
             leftText={currentCard.leftText}
             rightText={currentCard.rightText}
             image={currentCard.image}
