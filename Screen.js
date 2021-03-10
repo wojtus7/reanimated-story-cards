@@ -30,6 +30,23 @@ export default function AnimatedStyleUpdateExample() {
     }, timeout);
   };
 
+  const onStartGame = () => {
+    setCurrentCard(getCardByIndex(currentCardIndex));
+    setCurrentCardIndex(currentCardIndex + 1);
+
+    setTimeout(() => {
+      setShowStartButton(false);
+      setShowAnimatedReverseCard(true);
+    }, 500);
+    setTimeout(() => {
+      setShowReverseCard(true);
+      setTimeout(() => {
+        setShowAnimatedReverseCard(false);
+      }, 100);
+    }, 2000);
+    showNextCard(2500);
+  };
+
   const onChooseLeftAnswer = () => {
     createNewCard();
     setTimeout(() => {
@@ -56,6 +73,9 @@ export default function AnimatedStyleUpdateExample() {
 
   return (
     <View style={styles.wrapper}>
+      {showStartButton && <StartButton onPress={onStartGame} />}
+      {showAnimatedReverseCard && <PlaceholderBackCards />}
+      {showReverseCard && <PlaceholderBackStaticCard />}
       {showCard && (
         <Card
           onChooseLeftAnswer={onChooseLeftAnswer}
