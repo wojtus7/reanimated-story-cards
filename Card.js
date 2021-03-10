@@ -10,6 +10,8 @@ import Animated, {
 } from 'react-native-reanimated';
 import {StyleSheet, View, Text, Button} from 'react-native';
 import {PanGestureHandler} from 'react-native-gesture-handler';
+import CardReverse from './CardReverse';
+import CardPerson from './CardPerson';
 
 const Card = ({
   onChooseLeftAnswer,
@@ -64,6 +66,20 @@ const Card = ({
 
   const animatedFront = useAnimatedStyle(() => {
     return {
+      opacity: openAnimation.value >= 1.5 ? 1 : 0,
+      transform: [
+        {
+          scale: interpolate(openAnimation.value, [1, 1.5, 2], [1, 1.2, 1]),
+        },
+        {perspective: openAnimation.value * 180},
+        {rotateY: `${openAnimation.value * 180}deg`},
+      ],
+    };
+  });
+
+  const animatedBack = useAnimatedStyle(() => {
+    return {
+      opacity: openAnimation.value <= 1.5 ? 1 : 0,
       transform: [
         {
           scale: interpolate(openAnimation.value, [1, 1.5, 2], [1, 1.2, 1]),
@@ -109,6 +125,9 @@ const Card = ({
   return (
     <>
       <View style={styles.cardWrapper}>
+        <Animated.View style={[animatedBack, styles.wrapperBack]}>
+          <CardReverse />
+        </Animated.View>
         <PanGestureHandler onGestureEvent={gestureHandler}>
           <Animated.View style={animatedFront}>
             <Animated.View
@@ -123,6 +142,7 @@ const Card = ({
                   {leftText}
                 </Text>
               </Animated.View>
+              <CardPerson image={image} />
             </Animated.View>
           </Animated.View>
         </PanGestureHandler>
@@ -145,6 +165,13 @@ const styles = StyleSheet.create({
     width: 240,
     borderRadius: 35,
     overflow: 'hidden',
+  },
+  wrapperBack: {
+    height: 240,
+    width: 240,
+    borderRadius: 35,
+    overflow: 'hidden',
+    position: 'absolute',
   },
   cardWrapper: {
     height: 240,
