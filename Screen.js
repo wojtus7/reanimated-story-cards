@@ -1,5 +1,5 @@
 import {View, StyleSheet} from 'react-native';
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import Card from './Card';
 import PlaceholderBackCards from './PlaceholderBackCards';
 import Question from './Question';
@@ -10,7 +10,7 @@ import useGeneratedCards from './useGeneratedCards';
 
 export default function AnimatedStyleUpdateExample() {
   const {getCardByIndex} = useGeneratedCards();
-  const [currentCard, setCurrentCard] = useState(getCardByIndex(0));
+  const [currentCard, setCurrentCard] = useState({});
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
   const [currentMood, setCurrentMood] = useState({happy: [], sad: []});
 
@@ -48,6 +48,7 @@ export default function AnimatedStyleUpdateExample() {
   };
 
   const onChooseLeftAnswer = () => {
+    setCurrentMood(currentCard.onLeft);
     createNewCard();
     setTimeout(() => {
       setCurrentMood({happy: [], sad: []});
@@ -55,6 +56,7 @@ export default function AnimatedStyleUpdateExample() {
   };
 
   const onChooseRightAnswer = () => {
+    setCurrentMood(currentCard.onRight);
     createNewCard();
     setTimeout(() => {
       setCurrentMood({happy: [], sad: []});
@@ -74,6 +76,9 @@ export default function AnimatedStyleUpdateExample() {
 
   return (
     <View style={styles.wrapper}>
+      <View style={styles.topWrapper}>
+        <PowerIndicators currentMood={currentMood} />
+      </View>
       <View style={styles.questionWrapper}>
         <Question question={currentCard.question} showQuestion={showQuestion} />
       </View>
@@ -92,6 +97,7 @@ export default function AnimatedStyleUpdateExample() {
           />
         )}
       </View>
+      <View style={styles.nameWrapper} />
     </View>
   );
 }
@@ -101,7 +107,6 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'column',
     alignItems: 'center',
-    justifyContent: 'center',
   },
   cardWrapper: {
     height: 240,
