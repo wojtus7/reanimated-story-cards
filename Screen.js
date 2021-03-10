@@ -30,25 +30,7 @@ export default function AnimatedStyleUpdateExample() {
     }, timeout);
   };
 
-  const onStartGame = () => {
-    setCurrentCard(getCardByIndex(currentCardIndex));
-    setCurrentCardIndex(currentCardIndex + 1);
-
-    setTimeout(() => {
-      setShowStartButton(false);
-      setShowAnimatedReverseCard(true);
-    }, 500);
-    setTimeout(() => {
-      setShowReverseCard(true);
-      setTimeout(() => {
-        setShowAnimatedReverseCard(false);
-      }, 100);
-    }, 2000);
-    showNextCard(2500);
-  };
-
   const onChooseLeftAnswer = () => {
-    setCurrentMood(currentCard.onLeft);
     createNewCard();
     setTimeout(() => {
       setCurrentMood({happy: [], sad: []});
@@ -56,7 +38,6 @@ export default function AnimatedStyleUpdateExample() {
   };
 
   const onChooseRightAnswer = () => {
-    setCurrentMood(currentCard.onRight);
     createNewCard();
     setTimeout(() => {
       setCurrentMood({happy: [], sad: []});
@@ -64,7 +45,6 @@ export default function AnimatedStyleUpdateExample() {
   };
 
   const createNewCard = () => {
-    setShowQuestion(false);
     setTimeout(() => {
       // let it fly away in peace for 300 ms
       setCurrentCard(getCardByIndex(currentCardIndex));
@@ -76,14 +56,16 @@ export default function AnimatedStyleUpdateExample() {
 
   return (
     <View style={styles.wrapper}>
-      <Card
-        onChooseLeftAnswer={onChooseLeftAnswer}
-        onChooseRightAnswer={onChooseRightAnswer}
-        leftText={currentCard.leftText}
-        rightText={currentCard.rightText}
-        image={currentCard.image}
-        backgroundColor={currentCard.background}
-      />
+      {showCard && (
+        <Card
+          onChooseLeftAnswer={onChooseLeftAnswer}
+          onChooseRightAnswer={onChooseRightAnswer}
+          leftText={currentCard.leftText}
+          rightText={currentCard.rightText}
+          image={currentCard.image}
+          backgroundColor={currentCard.background}
+        />
+      )}
     </View>
   );
 }

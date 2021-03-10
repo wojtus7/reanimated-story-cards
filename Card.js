@@ -1,4 +1,7 @@
-import React, {useEffect} from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable react-native/no-inline-styles */
+
+import React, {useEffect, useState} from 'react';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -7,8 +10,9 @@ import Animated, {
   interpolate,
   Extrapolate,
   withTiming,
+  runOnJS,
 } from 'react-native-reanimated';
-import {StyleSheet, View, Text, Button} from 'react-native';
+import {StyleSheet, View, Text} from 'react-native';
 import {PanGestureHandler} from 'react-native-gesture-handler';
 import CardReverse from './CardReverse';
 import CardPerson from './CardPerson';
@@ -21,6 +25,8 @@ const Card = ({
   image,
   backgroundColor,
 }) => {
+  const [isActive, setIsActive] = useState(false);
+  const [showCard, setShowCard] = useState(false);
   const x = useSharedValue(0);
   const y = useSharedValue(0);
 
@@ -41,11 +47,36 @@ const Card = ({
       x.value = ctx.startX + event.translationX;
       y.value = ctx.startY + event.translationY;
     },
-    onEnd: () => {
-      x.value = withSpring(0, cardSpringConfig);
+    onEnd: (event) => {
+      if (event.velocityX > 500 || event.translationX > 150) {
+        x.value = withSpring(400, {
+          velocity: event.velocityX,
+        });
+        runOnJS(onChooseRightAnswer)();
+      } else if (event.velocityX < -500 || event.translationX < -150) {
+        x.value = withSpring(-400, {
+          velocity: event.velocityX,
+        });
+        runOnJS(onChooseLeftAnswer)();
+      } else {
+        x.value = withSpring(0, cardSpringConfig);
+      }
       y.value = withSpring(0, cardSpringConfig);
     },
   });
+
+  useEffect(() => {
+    // I give time for images to load up without blinking
+    setShowCard(true);
+    setTimeout(() => {
+      openAnimation.value = withTiming(2, {
+        duration: 1000,
+      });
+      setTimeout(() => {
+        setIsActive(true);
+      }, 1000);
+    }, 200);
+  }, []);
 
   const animatedMovableCard = useAnimatedStyle(() => {
     return {
@@ -146,12 +177,12 @@ const Card = ({
 
   return (
     <>
-      <View style={styles.cardWrapper}>
+      <View style={[{opacity: showCard ? 1 : 0}, styles.cardWrapper]}>
         <Animated.View style={[animatedBack, styles.wrapperBack]}>
           <Animated.View style={[animatedBackShadow, styles.shadow]} />
           <CardReverse />
         </Animated.View>
-        <PanGestureHandler onGestureEvent={gestureHandler}>
+        <PanGestureHandler onGestureEvent={gestureHandler} enabled={isActive}>
           <Animated.View style={animatedFront}>
             <Animated.View
               style={[animatedMovableCard, styles.wrapper, {backgroundColor}]}>
@@ -171,14 +202,6 @@ const Card = ({
           </Animated.View>
         </PanGestureHandler>
       </View>
-      <Button
-        title={'Flip'}
-        onPress={() => {
-          openAnimation.value = withTiming(openAnimation.value === 1 ? 2 : 1, {
-            duration: 1500,
-          });
-        }}
-      />
     </>
   );
 };
