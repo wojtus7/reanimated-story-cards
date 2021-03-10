@@ -90,6 +90,28 @@ const Card = ({
     };
   });
 
+  const animatedBackShadow = useAnimatedStyle(() => {
+    return {
+      opacity: interpolate(
+        openAnimation.value,
+        [1, 1.5],
+        [0, 0.3],
+        Extrapolate.CLAMP,
+      ),
+    };
+  });
+
+  const animatedFrontShadow = useAnimatedStyle(() => {
+    return {
+      opacity: interpolate(
+        openAnimation.value,
+        [1.5, 2],
+        [0.3, 0],
+        Extrapolate.CLAMP,
+      ),
+    };
+  });
+
   const animatedRightTextWrapper = useAnimatedStyle(() => {
     return {
       opacity: interpolate(x.value, [15, 70], [0, 1], Extrapolate.CLAMP),
@@ -126,6 +148,7 @@ const Card = ({
     <>
       <View style={styles.cardWrapper}>
         <Animated.View style={[animatedBack, styles.wrapperBack]}>
+          <Animated.View style={[animatedBackShadow, styles.shadow]} />
           <CardReverse />
         </Animated.View>
         <PanGestureHandler onGestureEvent={gestureHandler}>
@@ -143,6 +166,7 @@ const Card = ({
                 </Text>
               </Animated.View>
               <CardPerson image={image} />
+              <Animated.View style={[animatedFrontShadow, styles.shadow]} />
             </Animated.View>
           </Animated.View>
         </PanGestureHandler>
@@ -192,6 +216,13 @@ const styles = StyleSheet.create({
   },
   textLeft: {
     textAlign: 'right',
+  },
+  shadow: {
+    position: 'absolute',
+    height: '100%',
+    width: '100%',
+    backgroundColor: '#000',
+    zIndex: 10,
   },
 });
 
