@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -6,8 +6,9 @@ import Animated, {
   withSpring,
   interpolate,
   Extrapolate,
+  withTiming,
 } from 'react-native-reanimated';
-import {StyleSheet, View, Text} from 'react-native';
+import {StyleSheet, View, Text, Button} from 'react-native';
 import {PanGestureHandler} from 'react-native-gesture-handler';
 
 const Card = ({
@@ -20,6 +21,8 @@ const Card = ({
 }) => {
   const x = useSharedValue(0);
   const y = useSharedValue(0);
+
+  const openAnimation = useSharedValue(1);
 
   const cardSpringConfig = {
     damping: 100,
@@ -45,6 +48,8 @@ const Card = ({
   const animatedMovableCard = useAnimatedStyle(() => {
     return {
       transform: [
+        {translateX: x.value},
+        {translateY: y.value},
         {
           rotateZ: interpolate(
             x.value,
@@ -53,8 +58,18 @@ const Card = ({
             Extrapolate.EXTEND,
           ),
         },
-        {translateX: x.value},
-        {translateY: y.value},
+      ],
+    };
+  });
+
+  const animatedFront = useAnimatedStyle(() => {
+    return {
+      transform: [
+        {
+          scale: interpolate(openAnimation.value, [1, 1.5, 2], [1, 1.2, 1]),
+        },
+        {perspective: openAnimation.value * 180},
+        {rotateY: `${openAnimation.value * 180}deg`},
       ],
     };
   });
@@ -92,21 +107,35 @@ const Card = ({
   });
 
   return (
-    <View style={styles.cardWrapper}>
-      <PanGestureHandler onGestureEvent={gestureHandler}>
-        <Animated.View
-          style={[animatedMovableCard, styles.wrapper, {backgroundColor}]}>
-          <Animated.View
-            style={[animatedRightTextWrapper, styles.topTextWrapper]}>
-            <Text style={styles.topText}>{rightText}</Text>
+    <>
+      <View style={styles.cardWrapper}>
+        <PanGestureHandler onGestureEvent={gestureHandler}>
+          <Animated.View style={animatedFront}>
+            <Animated.View
+              style={[animatedMovableCard, styles.wrapper, {backgroundColor}]}>
+              <Animated.View
+                style={[animatedRightTextWrapper, styles.topTextWrapper]}>
+                <Text style={styles.topText}>{rightText}</Text>
+              </Animated.View>
+              <Animated.View
+                style={[animatedLeftTextWrapper, styles.topTextWrapper]}>
+                <Text style={[styles.topText, styles.textLeft]}>
+                  {leftText}
+                </Text>
+              </Animated.View>
+            </Animated.View>
           </Animated.View>
-          <Animated.View
-            style={[animatedLeftTextWrapper, styles.topTextWrapper]}>
-            <Text style={[styles.topText, styles.textLeft]}>{leftText}</Text>
-          </Animated.View>
-        </Animated.View>
-      </PanGestureHandler>
-    </View>
+        </PanGestureHandler>
+      </View>
+      <Button
+        title={'Flip'}
+        onPress={() => {
+          openAnimation.value = withTiming(openAnimation.value === 1 ? 2 : 1, {
+            duration: 1500,
+          });
+        }}
+      />
+    </>
   );
 };
 
