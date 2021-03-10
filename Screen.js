@@ -62,6 +62,7 @@ export default function AnimatedStyleUpdateExample() {
   };
 
   const createNewCard = () => {
+    setShowQuestion(false);
     setTimeout(() => {
       // let it fly away in peace for 300 ms
       setCurrentCard(getCardByIndex(currentCardIndex));
@@ -73,19 +74,24 @@ export default function AnimatedStyleUpdateExample() {
 
   return (
     <View style={styles.wrapper}>
-      {showStartButton && <StartButton onPress={onStartGame} />}
-      {showAnimatedReverseCard && <PlaceholderBackCards />}
-      {showReverseCard && <PlaceholderBackStaticCard />}
-      {showCard && (
-        <Card
-          onChooseLeftAnswer={onChooseLeftAnswer}
-          onChooseRightAnswer={onChooseRightAnswer}
-          leftText={currentCard.leftText}
-          rightText={currentCard.rightText}
-          image={currentCard.image}
-          backgroundColor={currentCard.background}
-        />
-      )}
+      <View style={styles.questionWrapper}>
+        <Question question={currentCard.question} showQuestion={showQuestion} />
+      </View>
+      <View style={styles.cardWrapper}>
+        {showStartButton && <StartButton onPress={onStartGame} />}
+        {showAnimatedReverseCard && <PlaceholderBackCards />}
+        {showReverseCard && <PlaceholderBackStaticCard />}
+        {showCard && (
+          <Card
+            onChooseLeftAnswer={onChooseLeftAnswer}
+            onChooseRightAnswer={onChooseRightAnswer}
+            leftText={currentCard.leftText}
+            rightText={currentCard.rightText}
+            image={currentCard.image}
+            backgroundColor={currentCard.background}
+          />
+        )}
+      </View>
     </View>
   );
 }
