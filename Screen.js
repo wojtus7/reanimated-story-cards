@@ -1,5 +1,5 @@
 import {View, StyleSheet} from 'react-native';
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import Card from './Card';
 import PlaceholderBackCards from './PlaceholderBackCards';
 import Question from './Question';
@@ -10,7 +10,7 @@ import useGeneratedCards from './useGeneratedCards';
 
 export default function AnimatedStyleUpdateExample() {
   const {getCardByIndex} = useGeneratedCards();
-  const [currentCard, setCurrentCard] = useState({});
+  const [currentCard, setCurrentCard] = useState(getCardByIndex(0));
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
   const [currentMood, setCurrentMood] = useState({happy: [], sad: []});
 
@@ -76,28 +76,14 @@ export default function AnimatedStyleUpdateExample() {
 
   return (
     <View style={styles.wrapper}>
-      <View style={styles.topWrapper}>
-        <PowerIndicators currentMood={currentMood} />
-      </View>
-      <View style={styles.questionWrapper}>
-        <Question question={currentCard.question} showQuestion={showQuestion} />
-      </View>
-      <View style={styles.cardWrapper}>
-        {showStartButton && <StartButton onPress={onStartGame} />}
-        {showAnimatedReverseCard && <PlaceholderBackCards />}
-        {showReverseCard && <PlaceholderBackStaticCard />}
-        {showCard && (
-          <Card
-            onChooseLeftAnswer={onChooseLeftAnswer}
-            onChooseRightAnswer={onChooseRightAnswer}
-            leftText={currentCard.leftText}
-            rightText={currentCard.rightText}
-            image={currentCard.image}
-            backgroundColor={currentCard.background}
-          />
-        )}
-      </View>
-      <View style={styles.nameWrapper} />
+      <Card
+        onChooseLeftAnswer={onChooseLeftAnswer}
+        onChooseRightAnswer={onChooseRightAnswer}
+        leftText={currentCard.leftText}
+        rightText={currentCard.rightText}
+        image={currentCard.image}
+        backgroundColor={currentCard.background}
+      />
     </View>
   );
 }
@@ -107,6 +93,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'column',
     alignItems: 'center',
+    justifyContent: 'center',
   },
   cardWrapper: {
     height: 240,
