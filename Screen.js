@@ -17,7 +17,7 @@ export default function AnimatedStyleUpdateExample() {
   const [showStartButton, setShowStartButton] = useState(true);
   const [showAnimatedReverseCard, setShowAnimatedReverseCard] = useState(false);
   const [showReverseCard, setShowReverseCard] = useState(false);
-  const [showCard, setShowCard] = useState(false);
+  const [showCard, setShowCard] = useState(true);
   const [showQuestion, setShowQuestion] = useState(false);
 
   // TODO refactor those settimeouts
