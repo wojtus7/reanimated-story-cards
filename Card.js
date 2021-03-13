@@ -46,12 +46,12 @@ const Card = ({
     return {
       transform: [
         {
-          rotateZ: interpolate(
+          rotateZ: `${interpolate(
             x.value,
             [-50, 50],
             [-0.05, 0.05],
             Extrapolate.EXTEND,
-          ),
+          )}rad`,
         },
         {translateX: x.value},
         {translateY: y.value},
