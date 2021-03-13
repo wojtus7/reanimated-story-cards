@@ -46,12 +46,12 @@ const Card = ({
     return {
       transform: [
         {
-          rotateZ: interpolate(
+          rotateZ: `${interpolate(
             x.value,
             [-50, 50],
             [-0.05, 0.05],
             Extrapolate.EXTEND,
-          ),
+          )}rad`,
         },
         {translateX: x.value},
         {translateY: y.value},
@@ -64,12 +64,12 @@ const Card = ({
       opacity: interpolate(x.value, [15, 70], [0, 1], Extrapolate.CLAMP),
       transform: [
         {
-          rotateZ: interpolate(
+          rotateZ: `${interpolate(
             x.value,
             [0, 50],
             [0, -0.03],
             Extrapolate.EXTEND,
-          ),
+          )}rad`,
         },
       ],
     };
@@ -80,12 +80,12 @@ const Card = ({
       opacity: interpolate(x.value, [-15, -70], [0, 1], Extrapolate.CLAMP),
       transform: [
         {
-          rotateZ: interpolate(
+          rotateZ: `${interpolate(
             x.value,
             [-50, 0],
             [0.03, 0],
             Extrapolate.EXTEND,
-          ),
+          )}rad`,
         },
       ],
     };
