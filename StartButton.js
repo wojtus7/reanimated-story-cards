@@ -49,6 +49,7 @@ const styles = StyleSheet.create({
   },
   cardWrapper: {
     height: 240,
+    width: 240,
     position: 'absolute',
     alignItems: 'center',
   },
