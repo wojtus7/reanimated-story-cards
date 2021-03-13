@@ -1,21 +1,21 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react-native/no-inline-styles */
 
+import React, {useEffect, useState} from 'react';
 import Animated, {
   useSharedValue,
-  withTiming,
   useAnimatedStyle,
   useAnimatedGestureHandler,
   withSpring,
   interpolate,
   Extrapolate,
+  withTiming,
   runOnJS,
 } from 'react-native-reanimated';
-import {StyleSheet, View} from 'react-native';
-import React, {useEffect, useState} from 'react';
+import {StyleSheet, View, Text} from 'react-native';
 import {PanGestureHandler} from 'react-native-gesture-handler';
-import CardPerson from './CardPerson';
 import CardReverse from './CardReverse';
+import CardPerson from './CardPerson';
 
 const Card = ({
   onChooseLeftAnswer,
@@ -30,7 +30,6 @@ const Card = ({
   const x = useSharedValue(0);
   const y = useSharedValue(0);
 
-  const textOpacityMultiplier = useSharedValue(1);
   const openAnimation = useSharedValue(1);
 
   const cardSpringConfig = {
@@ -53,13 +52,11 @@ const Card = ({
         x.value = withSpring(400, {
           velocity: event.velocityX,
         });
-        textOpacityMultiplier.value = withTiming(0, {duration: 100});
         runOnJS(onChooseRightAnswer)();
       } else if (event.velocityX < -500 || event.translationX < -150) {
         x.value = withSpring(-400, {
           velocity: event.velocityX,
         });
-        textOpacityMultiplier.value = withTiming(0, {duration: 100});
         runOnJS(onChooseLeftAnswer)();
       } else {
         x.value = withSpring(0, cardSpringConfig);
@@ -87,12 +84,12 @@ const Card = ({
         {translateX: x.value},
         {translateY: y.value},
         {
-          rotateZ: interpolate(
+          rotateZ: `${interpolate(
             x.value,
             [-50, 50],
             [-0.05, 0.05],
             Extrapolate.EXTEND,
-          ),
+          )}rad`,
         },
       ],
     };
@@ -148,17 +145,15 @@ const Card = ({
 
   const animatedRightTextWrapper = useAnimatedStyle(() => {
     return {
-      opacity:
-        textOpacityMultiplier.value *
-        interpolate(x.value, [15, 70], [0, 1], Extrapolate.CLAMP),
+      opacity: interpolate(x.value, [15, 70], [0, 1], Extrapolate.CLAMP),
       transform: [
         {
-          rotateZ: interpolate(
+          rotateZ: `${interpolate(
             x.value,
             [0, 50],
             [0, -0.03],
             Extrapolate.EXTEND,
-          ),
+          )}rad`,
         },
       ],
     };
@@ -166,17 +161,15 @@ const Card = ({
 
   const animatedLeftTextWrapper = useAnimatedStyle(() => {
     return {
-      opacity:
-        textOpacityMultiplier.value *
-        interpolate(x.value, [-15, -70], [0, 1], Extrapolate.CLAMP),
+      opacity: interpolate(x.value, [-15, -70], [0, 1], Extrapolate.CLAMP),
       transform: [
         {
-          rotateZ: interpolate(
+          rotateZ: `${interpolate(
             x.value,
             [-50, 0],
             [0.03, 0],
             Extrapolate.EXTEND,
-          ),
+          )}rad`,
         },
       ],
     };
@@ -195,15 +188,13 @@ const Card = ({
               style={[animatedMovableCard, styles.wrapper, {backgroundColor}]}>
               <Animated.View
                 style={[animatedRightTextWrapper, styles.topTextWrapper]}>
-                <Animated.Text style={styles.topText}>
-                  {rightText}
-                </Animated.Text>
+                <Text style={styles.topText}>{rightText}</Text>
               </Animated.View>
               <Animated.View
                 style={[animatedLeftTextWrapper, styles.topTextWrapper]}>
-                <Animated.Text style={[styles.topText, styles.textLeft]}>
+                <Text style={[styles.topText, styles.textLeft]}>
                   {leftText}
-                </Animated.Text>
+                </Text>
               </Animated.View>
               <CardPerson image={image} />
               <Animated.View style={[animatedFrontShadow, styles.shadow]} />
