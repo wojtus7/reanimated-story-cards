@@ -4,6 +4,8 @@ import Animated, {
   useSharedValue,
   useAnimatedStyle,
   withTiming,
+  withSequence,
+  withDelay,
 } from 'react-native-reanimated';
 
 const PowerPerson = ({image, isHappy, isSad}) => {
@@ -13,20 +15,24 @@ const PowerPerson = ({image, isHappy, isSad}) => {
 
   useEffect(() => {
     if (isHappy) {
-      heartAnimation.value = withTiming(1);
-      personSize.value = withTiming(1.1);
-      setTimeout(() => {
-        personSize.value = withTiming(1);
-        heartAnimation.value = withTiming(0);
-      }, 1000);
+      heartAnimation.value = withSequence(
+        withTiming(1),
+        withDelay(700, withTiming(0)),
+      );
+      personSize.value = withSequence(
+        withTiming(1.1),
+        withDelay(700, withTiming(1)),
+      );
     }
     if (isSad) {
-      cloudAnimation.value = withTiming(1);
-      personSize.value = withTiming(0.9);
-      setTimeout(() => {
-        personSize.value = withTiming(1);
-        cloudAnimation.value = withTiming(0);
-      }, 1000);
+      cloudAnimation.value = withSequence(
+        withTiming(1),
+        withDelay(700, withTiming(0)),
+      );
+      personSize.value = withSequence(
+        withTiming(0.9),
+        withDelay(700, withTiming(1)),
+      );
     }
   }, [cloudAnimation, heartAnimation, isSad, isHappy, personSize]);
 
