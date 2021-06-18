@@ -33,12 +33,6 @@ const Card = ({
 
   const openAnimation = useSharedValue(1);
 
-  const cardSpringConfig = {
-    damping: 100,
-    stiffness: 90,
-    mass: 0.5,
-  };
-
   const gestureHandler = useAnimatedGestureHandler({
     onStart: (_, ctx) => {
       ctx.startX = x.value;
@@ -49,26 +43,21 @@ const Card = ({
       y.value = ctx.startY + event.translationY;
     },
     onEnd: (event) => {
-      if (event.velocityX > 500 || event.translationX > 150) {
+      const tossX = event.translationX + 0.2 * event.velocityX;
+      if (tossX > 150) {
         x.value = withSpring(400, {
           velocity: event.velocityX,
         });
         runOnJS(onChooseRightAnswer)();
-      } else if (event.velocityX < -500 || event.translationX < -150) {
+      } else if (tossX < -150) {
         x.value = withSpring(-400, {
           velocity: event.velocityX,
         });
         runOnJS(onChooseLeftAnswer)();
       } else {
-        x.value = withSpring(
-          0,
-          Object.assign({}, {velocity: event.velocityX}, cardSpringConfig),
-        );
+        x.value = withSpring(0, {velocity: event.velocityX});
       }
-      y.value = withSpring(
-        0,
-        Object.assign({}, {velocity: event.velocityY}, cardSpringConfig),
-      );
+      y.value = withSpring(0, {velocity: event.velocityY});
     },
   });
 
