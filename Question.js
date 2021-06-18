@@ -1,22 +1,12 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import {StyleSheet, Text} from 'react-native';
-import Animated, {
-  useSharedValue,
-  useAnimatedStyle,
-  withTiming,
-} from 'react-native-reanimated';
+import Animated, {useAnimatedStyle, withTiming} from 'react-native-reanimated';
 
 const Question = ({question = '', showQuestion}) => {
-  const openAnimation = useSharedValue(0);
-
-  useEffect(() => {
-    openAnimation.value = withTiming(showQuestion ? 1 : 0);
-  }, [openAnimation, showQuestion]);
-
   const animatedWrapper = useAnimatedStyle(() => {
     return {
-      opacity: openAnimation.value,
-      transform: [{translateY: 10 - openAnimation.value * 10}],
+      opacity: withTiming(showQuestion ? 1 : 0),
+      transform: [{translateY: withTiming(showQuestion ? 0 : 10)}],
     };
   });
 
