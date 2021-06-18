@@ -11,6 +11,7 @@ import Animated, {
   Extrapolate,
   withTiming,
   runOnJS,
+  withDelay,
 } from 'react-native-reanimated';
 import {StyleSheet, View, Text} from 'react-native';
 import {PanGestureHandler} from 'react-native-gesture-handler';
@@ -59,23 +60,32 @@ const Card = ({
         });
         runOnJS(onChooseLeftAnswer)();
       } else {
-        x.value = withSpring(0, cardSpringConfig);
+        x.value = withSpring(
+          0,
+          Object.assign({}, {velocity: event.velocityX}, cardSpringConfig),
+        );
       }
-      y.value = withSpring(0, cardSpringConfig);
+      y.value = withSpring(
+        0,
+        Object.assign({}, {velocity: event.velocityY}, cardSpringConfig),
+      );
     },
   });
 
   useEffect(() => {
-    // I give time for images to load up without blinking
     setShowCard(true);
-    setTimeout(() => {
-      openAnimation.value = withTiming(2, {
-        duration: 1000,
-      });
-      setTimeout(() => {
-        setIsActive(true);
-      }, 1000);
-    }, 200);
+    openAnimation.value = withDelay(
+      200,
+      withTiming(
+        2,
+        {
+          duration: 1000,
+        },
+        () => {
+          runOnJS(setIsActive)(true);
+        },
+      ),
+    );
   }, []);
 
   const animatedMovableCard = useAnimatedStyle(() => {
